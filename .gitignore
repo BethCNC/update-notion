@@ -35,3 +35,8 @@ test_notion_cover.py
 .Spotlight-V100
 .Trashes
 
+# Environment variables
+.env
+.env.local
+.env.*.local
+
