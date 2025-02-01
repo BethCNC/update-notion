@@ -1,6 +1,8 @@
 from notion_client import Client
 import os
 from pathlib import Path
+import requests
+import time
 
 # Get absolute path to .env file
 root_dir = Path(__file__).parent.parent
@@ -60,9 +62,10 @@ try:
     notion = Client(auth=api_key)
     # Test the connection
     test = notion.users.me()
+    test_data = test  # Store the response
     print("Successfully connected to Notion API")
-    print(f"Connected as: {test.get('name', 'Unknown User')}")
-    print(f"Bot ID: {test.get('bot', {}).get('owner', {}).get('workspace', True)}")
+    print(f"Connected as: {test_data.get('name', 'Unknown User')}")
+    print(f"Bot ID: {test_data.get('bot', {}).get('owner', {}).get('workspace', True)}")
 except Exception as e:
     print("\nConnection failed!")
     print(f"Error: {str(e)}")
@@ -76,112 +79,175 @@ except Exception as e:
     print("3. The API key hasn't been regenerated")
     raise
 
-GITHUB_RAW_URL_BASE = "https://raw.githubusercontent.com/BethCNC/update-notion/main/images/"
-ICON_URL = "https://raw.githubusercontent.com/BethCNC/update-notion/main/images/icon.png"
+# Add error handling for image URLs
+def verify_image_url(url):
+    """Verify that an image URL is accessible"""
+    try:
+        response = requests.head(url)
+        if response.status_code == 200:
+            print(f"Successfully verified URL: {url}")
+            return True
+        print(f"URL not accessible (status {response.status_code}): {url}")
+        return False
+    except Exception as e:
+        print(f"Error checking URL {url}: {e}")
+        return False
 
-# Cover photo mapping (page name -> image filename)
+def get_valid_icon_url():
+    """Try both possible icon URLs and return the first valid one"""
+    base_url = "https://raw.githubusercontent.com/BethCNC/update-notion/main/images"
+    icon_urls = [
+        f"{base_url}/icon.png",
+        f"{base_url}/logo.png"
+    ]
+    
+    print("Checking icon URLs:")
+    for url in icon_urls:
+        if verify_image_url(url):
+            return url
+    return None
+
+# Constants
+GITHUB_USER = "BethCNC"
+GITHUB_REPO = "update-notion"
+GITHUB_BRANCH = "main"
+GITHUB_RAW_URL_BASE = f"https://raw.githubusercontent.com/{GITHUB_USER}/{GITHUB_REPO}/{GITHUB_BRANCH}/images/"
+ICON_URL = get_valid_icon_url()
+
+if not ICON_URL:
+    print("\nWARNING: No valid icon URL found!")
+    print("Please verify:")
+    print("1. The icon.png file exists in your GitHub repository")
+    print("2. The file is in the correct location: /images/icon.png")
+    print("3. The repository is public and the file is accessible")
+else:
+    print(f"\nUsing icon URL: {ICON_URL}")
+
+# Update the cover_photos mapping to match EXACTLY what's in your database
 cover_photos = {
-    "a_b_testing_notes": "a_b_testing_notes.png",
-    "brand_guidelines": "brand_guidelines.png",
-    "mission_statement": "mission statement.png",
-    "moodboard": "moodboard.png",
-    "brand_positioning": "brand_positioning.png",
-    "brand_values": "brand_values.png",
-    "brand_vision": "brand_vision.png",
-    "code_snippets_components": "code_snippets_components.png",
-    "color_palette": "color_palette.png",
-    "competitor_analysis": "competitor_analysis.png",
-    "development_roadmap": "development_roadmap.png",
-    "hosting_details": "hosting_details.png",
-    "iconography": "iconography.png",
-    "logos": "logos.png",
-    "marketing_assets": "marketing_assets.png",
-    "performance_metrics": "performance_metrics.png",
-    "photography_style": "photography_style.png",
-    "seo_insights": "seo_insights.png",
-    "sitemap": "sitemap.png",
-    "social_media_templates": "social_media_templates.png",
-    "target_audience": "target_audience.png",
-    "tech_stack_documentation": "tech_stack_documentation.png",
-    "typography": "typography.png",
-    "ui_ux_inspiration": "ui_ux_inspiration.png",
-    "user_journey_maps": "user_journey_maps.png",
+    # Exact matches from your database
+    "wireframes": "wireframes.png",
     "website_assets": "website_assets.png",
-    "wireframes": "wireframes.png"
+    "user_journey_maps": "user_journey_maps.png",
+    "ui_ux_inspiration": "ui_ux_inspiration.png",
+    "typography": "typography.png",
+    "tech_stack_documentation": "tech_stack_documentation.png",
+    "target_audience": "target_audience.png",
+    "social_media_templates": "social_media_templates.png",
+    "sitemap": "sitemap.png",
+    "seo_insights": "seo_insights.png",
+    "photography_style": "photography_style.png",
+    "performance_metrics": "performance_metrics.png",
+    "moodboard": "moodboard.png",
+    "logos": "logos.png",
+    "iconography": "iconography.png",
+    "hosting_details": "hosting_details.png",
+    "development_roadmap": "development_roadmap.png",
+    "deliverables_marketing": "marketing_assets.png",
+    "competitor_analysis": "competitor_analysis.png",
+    "color_palette": "color_palette.png",
+    "code_snippets_components": "code_snippets_components.png",
+    "brand_vision": "brand_vision.png",
+    "brand_values": "brand_values.png",
+    "brand_positioning_statement": "brand_positioning.png",
+    "mission_statement": "mission_statement.png",
+    "brand_guidelines": "brand_guidelines.png",
+    "a_b_testing_notes": "a_b_testing_notes.png"
 }
 
-def update_page_cover_and_icon(page_name):
-    """Update a single page cover and icon based on its name"""
+def verify_github_access():
+    """Verify access to GitHub repository and images"""
+    print("\nVerifying GitHub repository access...")
+    
+    # Test a few known images
+    test_images = [
+        "icon.png",
+        "brand_guidelines.png",
+        "a_b_testing_notes.png"
+    ]
+    
+    for image in test_images:
+        url = f"{GITHUB_RAW_URL_BASE}{image}"
+        if verify_image_url(url):
+            print(f"✓ Successfully verified access to {image}")
+        else:
+            print(f"✗ Failed to access {image}")
+            print(f"URL attempted: {url}")
+            return False
+    return True
+
+def update_page_cover_and_icon(page_name, page_id):
+    """Update a single page cover and icon"""
     try:
-        print(f"Updating page: {page_name}")
-        response = notion.databases.query(
-            database_id=database_id,
-            filter={
-                "property": "Name",
-                "title": {
-                    "equals": page_name
+        cover_url = f"{GITHUB_RAW_URL_BASE}{cover_photos[page_name]}"
+        print(f"Attempting to update: {page_name}")
+        print(f"Using cover URL: {cover_url}")
+        
+        # Verify URL is accessible
+        if not verify_image_url(cover_url):
+            print(f"Warning: Cover image URL is not accessible: {cover_url}")
+            return False
+
+        # Update the page with new cover and icon
+        notion.pages.update(
+            page_id=page_id,
+            cover={
+                "type": "external",
+                "external": {
+                    "url": cover_url
+                }
+            },
+            icon={
+                "type": "external",
+                "external": {
+                    "url": ICON_URL
                 }
             }
         )
-
-        if not response.get("results"):
-            print(f"Page '{page_name}' not found in database.")
-            return
-
-        page = response["results"][0]
-        page_id = page["id"]
-
-        if page_name in cover_photos:
-            cover_url = f"{GITHUB_RAW_URL_BASE}{cover_photos[page_name]}"
-            print(f"Using cover URL: {cover_url}")
-
-            notion.pages.update(
-                page_id=page_id,
-                cover={
-                    "type": "external",
-                    "external": {
-                        "url": cover_url
-                    }
-                },
-                icon={
-                    "type": "external",
-                    "external": {
-                        "url": ICON_URL
-                    }
-                }
-            )
-            print(f"Successfully updated cover and icon for page: {page_name}")
-        else:
-            print(f"No cover photo mapping found for page: {page_name}")
+        print(f"✓ Successfully updated cover and icon for page: {page_name}")
+        return True
     except Exception as e:
         print(f"Error updating page '{page_name}': {e}")
+        return False
 
 def update_all_covers_and_icons():
     """Update covers and icons for all pages in the database"""
     try:
-        pages = notion.databases.query(database_id=database_id).get("results", [])
-
+        print("\nFetching pages from Notion database...")
+        response = notion.databases.query(database_id=database_id)
+        pages = response.get("results", [])
+        
         if not pages:
             print("No pages found in the database.")
             return
 
+        print("\nFound pages in database:")
+        for page in pages:
+            page_name = page["properties"]["Name"]["title"][0]["text"]["content"]
+            print(f"- {page_name}")
+
+        success_count = 0
+        fail_count = 0
+        
         for page in pages:
             try:
-                page_name = page["properties"]["Name"]["title"][0]["text"]["content"].lower()
-                if page_name in cover_photos:
-                    print(f"Updating cover and icon for page: {page_name}")
-                    update_page_cover_and_icon(page_name)
+                page_name = page["properties"]["Name"]["title"][0]["text"]["content"]
+                print(f"\nProcessing page: {page_name}")
+                if update_page_cover_and_icon(page_name, page["id"]):
+                    success_count += 1
                 else:
-                    print(f"No cover photo mapping found for page: {page_name}")
+                    fail_count += 1
             except Exception as e:
                 print(f"Error processing page: {e}")
+                fail_count += 1
+        
+        print(f"\nUpdate complete:")
+        print(f"✓ Successfully updated: {success_count} pages")
+        print(f"✗ Failed to update: {fail_count} pages")
+        
     except Exception as e:
         print(f"Error fetching pages: {e}")
 
 if __name__ == "__main__":
-    # Test updating a single page
-    test_page = "a_b_testing_notes"
-    print(f"Testing single page update for: {test_page}")
-    update_page_cover_and_icon(test_page)
-
+    print("\nStarting bulk update of all pages...")
     update_all_covers_and_icons()
