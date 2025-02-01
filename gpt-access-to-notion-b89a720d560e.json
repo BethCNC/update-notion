@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "gpt-access-to-notion",
+  "private_key_id": "b89a720d560e27d160abfb7f060449ecd5f4e071",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDVHgUMdc6mMf4l\nDRE8dEFnhrMLUOIGc2UubWMlG7N996O7RiwVvgaBm3foOViIUU6LaPjvLK6puCku\nTDFo6KABva54C9uOuTphvljWFf9ItGP3sXX3OyLxExrxG2Sv1L1rWvrFgkJ4NpEK\nu0D9tAk/OEhGKLAhRs0+3MdG099zyRcF7PoUeRcctmm807Di6ho4a6COgPAeTZIX\nI6lCkNrJL+6yCGufDGDHRn3ueU7+y1d80QppA9ve0j0QX449sDTZ2gDRSec4BLYn\npRdmp9iqk9SD/CP4JJziUIszTNHd00PQNLTfKcw/Fa1PaPv6v8HWm8Df21xBoneE\njAWaWB7DAgMBAAECggEABKTGz2KxwgVM2FnUilCuLCdPN2vnwOQ6zCwuANz9qD0B\nIE+DHmYpliFhF3pIZ4/9+iOraOq8U45jt1KJsROAiQktCAiaHB4FG6QeI2wPR/JG\nS1teiqiLNl2INMC4DOzBw9kTpcIU2LG3r1gtLloB6ZK8YGr6i38Tcc81uGFdeRRa\nbSyFT+q85WymwaU36+h1hChC7KNMkhwntd/85uiJLqIca81eeO59aCzCvCsQisZD\nedv7XkSPEWK/mVTxinehZMVSfpFFHBYSwJo7sXgYX3HYxLX4SPRAqIJZMqQXCdtG\nslXnJzhaVobasVz36PoIFs9eliSCs1KtZrNGXbw8wQKBgQD4l++V7af34KAmYkyn\nbpSS/+8tB4JraYTFjHUVtiaW6kPsbvZ7qxlMasph/ZhXNHVASrbdZ0lkOHmN6gt5\n5uivJjLOZ3rCu0nNJNupLe7CgQDmhc1fugZcwvWdMwVzDyFBN3e2PLZS+zewARLH\nUa+BF/KOMaxV0kpr+QaEYOH1GQKBgQDbd4AsI/CHLubnJ55rfk4aHOsMGwhXRvCh\nJw+aMz0Sim6wK81oAtX6EYTo3HpME7F5aiHX/LjLM0ly5mkTuj6VZ99C7RQKbdFZ\nHSRyk9S5BgntiM5/mF/u9IIQPm854xNvTg3CMqyPshW0H8ltrbwppajylq6D9Hme\nTQOFWIvyOwKBgA7mTF3YGLEqrW6fhaijYBRPcq5oPNDjSins+TeL61QwRlHtdKiE\n4MdLv0WQRYk0g7KOx9cNUcDIAcEXvghYZqnYyELGwPza7Nl21BOXxS+zO7KVYnHS\nXH9C0CXT4Qe8aGnYQTyS9vqSRAwwhEeeBb7fCJKtN38NU5iVHGbix6hBAoGAB1+6\nhMEoYcJnq7ifEAmMYkA6fYui+hu+FgwT8CBsmuTf1zeBjU8bFW3lQ1W1Hj1DJ0sz\nm+g35Uvx2dR4D1ugorB8xejlVXxfHllmUhs5eIYFa1+/YHYkMwkwHY+beRxyGLlM\nqQu+1I0tQYIX6IF/4v5X8N6zOmfKdlEsHxzchuUCgYEAiQopyaKQHUhHA+E9broX\nCRAos/8cPdjK7bDR4SZnhTrZBDJfnCT3Elml5T9RUipz8rIfLMzVNzFS6Ip5JAAK\npr7VDa0BlRBATnK6LS8oKz/4MDPYyfzLNPoQwnJKV0xEuSHmwquiSfz+hrqmhUDf\nwUvJGMCwdQXIVFL36I1RS7Q=\n-----END PRIVATE KEY-----\n",
+  "client_email": "get-image-id@gpt-access-to-notion.iam.gserviceaccount.com",
+  "client_id": "116498466515396109839",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/get-image-id%40gpt-access-to-notion.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
