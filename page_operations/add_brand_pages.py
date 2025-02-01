@@ -1,10 +1,15 @@
 from notion_client import Client
+from dotenv import load_dotenv
+import os
+
+# Load environment variables
+load_dotenv()
 
 # Initialize Notion client
-notion = Client(auth="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")
+notion = Client(auth=os.getenv('NOTION_API_KEY'))
 
 # Database ID
-database_id = "18c86edcae2c80d4852cfd7e132b780b"
+database_id = os.getenv('BRAND_IDENTITY_DATABASE_ID')
 
 # List of page names
 page_names = [

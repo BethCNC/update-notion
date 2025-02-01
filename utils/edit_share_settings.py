@@ -1,14 +1,19 @@
 from googleapiclient.discovery import build
 from google.oauth2.service_account import Credentials
+from dotenv import load_dotenv
+import os
 
-# Path to your service account credentials JSON file
-SERVICE_ACCOUNT_FILE = "/Users/bethcartrette/Library/Mobile Documents/com~apple~CloudDocs/REPOS/Chat_GPT_Access_to_Notion/gpt-access-to-notion-b89a720d560e.json"
+# Load environment variables
+load_dotenv()
+
+# Get credentials file path from environment
+SERVICE_ACCOUNT_FILE = os.getenv('GOOGLE_SERVICE_ACCOUNT_FILE')
 
 # The scope to access Google Drive
 SCOPES = ["https://www.googleapis.com/auth/drive"]
 
 # Folder ID from Google Drive
-FOLDER_ID = "1Qczf_AJzSMTtM8KH8NzGHQYFf1s2QPIt"
+FOLDER_ID = os.getenv('GOOGLE_DRIVE_FOLDER_ID')
 
 # Authenticate and build the Google Drive API service
 credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)

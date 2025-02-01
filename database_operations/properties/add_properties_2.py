@@ -1,7 +1,12 @@
 from notion_client import Client
+from dotenv import load_dotenv
+import os
+
+# Load environment variables
+load_dotenv()
 
 # Initialize Notion client
-notion = Client(auth="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")
+notion = Client(auth=os.getenv('NOTION_API_KEY'))
 
 # Function to update database properties
 def update_database_properties(database_id, properties):
